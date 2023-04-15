@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 
 
-class Autor(models.Model):
+class Author(models.Model):
     authorUser = models.OneToOneField(User, on_delete=models.CASCADE)
     ratingAuthor = models.SmallIntegerField(default=0)
 
@@ -25,7 +25,7 @@ class Category(models.Model):
 
 
 class Post(models.Model):
-    author = models.ForeignKey(Autor, on_delete=models.CASCADE)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
     NEWS = 'NW'
     ARTICLE = 'AR'
     CATEGORY_CHOICES = (
