@@ -1,11 +1,16 @@
 {% extends 'flatpages/default.html' %}
 
-<!-- Название у нас будет Product -->
+<!-- Название у нас будет products -->
 {% block title %}
 New
 {% endblock title %}
 
-<!-- В контенте на странице мы выводим сам товар, идентификатор которого был передан в url -->
 {% block content %}
-<h1>{{ new }}</h1>
+   <h1>{{ new.title }}</h1>
+   <h2>{{ new.dateCreation|date:'d M Y' }}</h2>
+   {% if new %}
+               <td>{{ new.text }}</td>
+   {% else %}
+       <h3>Новости нет</h3>
+   {% endif %}
 {% endblock content %}
