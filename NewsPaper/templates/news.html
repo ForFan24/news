@@ -1,5 +1,7 @@
 {% extends 'flatpages/default.html' %}
 
+{% load censor %}
+
 <!-- Название у нас будет products -->
 {% block title %}
 News
@@ -20,9 +22,9 @@ News
 
            {% for new in news %}
            <tr>
-               <td>{{ new.title }}</td>
+               <td>{{ new.title|censor }}</td>
                <td>{{ new.dateCreation|date:'d M Y' }}</td>
-               <td>{{ new.text|truncatechars:20 }}</td>
+               <td>{{ new.text|truncatechars:20|censor }}</td>
            </tr>
            {% endfor %}
 
