@@ -8,10 +8,6 @@ News
 
 {% block content %}
 <h1>Новости</h1>
-<form action="" method="get">
-       {{ filterset.form.as_p }}
-       <input type="submit" value="Найти" />
-   </form>
 <hr>
    <h3>Количество новостей: {{ news|length }}</h3>
 <hr>
