@@ -11,12 +11,18 @@ News
 <hr>
    <h3>Количество новостей: {{ news|length }}</h3>
 <hr>
+    {% if perms.news.add_news %}
+    <a href="{% url 'news_create' %}">Добавить новость</a>
+    {% endif %}
    {% if news %}
        <table>
            <tr>
                <td>Заголовок</td>
                <td>Дата</td>
                <td>Текст</td>
+               {% if perms.news.change_new %}
+                <td>Действия</td>
+                {% endif %}
            </tr>
 
            {% for new in news %}
@@ -24,6 +30,13 @@ News
                <td>{{ new.title|censor }}</td>
                <td>{{ new.dateCreation|date:'d M Y' }}</td>
                <td>{{ new.text|truncatechars:20|censor }}</td>
+
+               <td>
+                    {# А здесь доступ для каждой ссылки теперь будем проверять отдельно #}
+                    {% if perms.news.change_new %}
+                    <a href="{% url 'news_update' pk=new.id %}">Изменить</a>
+                    {% endif %}
+                </td>
            </tr>
            {% endfor %}
 
