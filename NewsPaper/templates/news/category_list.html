@@ -11,14 +11,17 @@ News
 <hr>
    <h3>Количество новостей: {{ news|length }}</h3>
 <hr>
+    {% if is_not_subscriber %}
+<p class="text-center"><a href="{% url 'subscribe' category.id %}" class="btn btn-secondary btn-sm">Подписаться на категорию</a></p>
+    {% endif %}
     {% if perms.news.add_news %}
     <a href="{% url 'news_create' %}">Добавить новость</a>
     {% endif %}
-   {% if news %}
+   {% if category_news_list %}
        <table>
            <tr>
                <td>Заголовок</td>
-               <td>Категория</td>
+               <td>Категории</td>
                <td>Дата</td>
                <td>Текст</td>
                {% if perms.news.change_new %}
@@ -26,10 +29,11 @@ News
                 {% endif %}
            </tr>
 
-           {% for new in news %}
+           {% for new in category_news_list %}
            <tr>
                <td>{{ new.title|censor }}</td>
-               <td>{% for category in new.postCategory.all %}
+               <td>
+               {% for category in new.postCategory.all %}
                    <a href="{% url 'category_list' category.id %}">{{category}}</a>
                {% endfor %}
                </td>

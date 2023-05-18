@@ -1,6 +1,10 @@
 from datetime import datetime
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, render
+from django.views.decorators.csrf import csrf_protect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post
+from .models import Post, Category, PostCategory
 from .filters import PostFilter
 from .forms import PostForm
 from django.urls import reverse_lazy
@@ -61,3 +65,28 @@ class PostDelete(DeleteView):
     success_url = reverse_lazy('news_list')
 
 
+class CategoryListView(PostList):
+    model = Post
+    template_name = 'news/category_list.html'
+    context_object_name = 'category_news_list'
+
+    def get_queryset(self):
+        self.postCategory = get_object_or_404(Category, id=self.kwargs['pk'])
+        queryset = Post.objects.filter(postCategory=self.postCategory).order_by('-dateCreation')
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_not_subscriber'] = self.request.user not in self.postCategory.subscribers.all()
+        context['category'] = self.postCategory
+        return context
+
+
+@login_required
+@csrf_protect
+def subscriptions(request, pk):
+    user = request.user
+    category = Category.objects.get(id=pk)
+    category.subscribers.add(user)
+    massage = 'Вы успешно подписались на рассылку'
+    return render(request, 'news/subscribe.html', {'category': category, 'massage': massage})

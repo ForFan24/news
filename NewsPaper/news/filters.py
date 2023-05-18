@@ -1,6 +1,6 @@
 from django_filters import FilterSet, DateTimeFilter, CharFilter, ModelChoiceFilter
 from django.forms import DateTimeInput
-from .models import Category
+from .models import Category, PostCategory
 
 
 class PostFilter(FilterSet):
@@ -21,6 +21,13 @@ class PostFilter(FilterSet):
     add_category = ModelChoiceFilter(
         field_name='postcategory__categoryThrough',
         queryset=Category.objects.all(),
+        label='Категория поста',
+        empty_label='all',
+
+    )
+    add_news_category = ModelChoiceFilter(
+        field_name='postcategory__categoryThrough',
+        queryset=PostCategory.objects.all(),
         label='Категория поста',
         empty_label='all',
 
