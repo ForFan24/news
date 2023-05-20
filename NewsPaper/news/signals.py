@@ -1,10 +1,10 @@
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
-from django.db.models.signals import post_save
+from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 
-from NewsPaper.news.models import PostCategory
+from news.models import PostCategory
 
 
 def send_notifications(preview, pk, title, subscribers):
@@ -23,20 +23,20 @@ def send_notifications(preview, pk, title, subscribers):
         to=subscribers,
     )
 
-    msg.attach_alternative(html_content, 'text/.html')
+    msg.attach_alternative(html_content, 'text/html')
     msg.send()
 
 
-@receiver(post_save, sender=PostCategory)
+@receiver(m2m_changed, sender=PostCategory)
 def notify_about_new_post(sender, instance, **kwargs):
-    if kwargs['action'] == 'news_create':
+    if kwargs['action'] == 'post_add':
         categories = instance.postCategory.all()
-        subscribers_email = []
+        subscribers_emails = []
 
         for cat in categories:
             subscribers = cat.subscribers.all()
-            subscribers_email += [s.email for s in subscribers]
+            subscribers_emails += [s.email for s in subscribers]
 
-        send_notifications(instance.preview, instance.pk, instance.title, instance.subscribers)
+        send_notifications(instance.preview(), instance.pk, instance.title, subscribers_emails)
 
 
