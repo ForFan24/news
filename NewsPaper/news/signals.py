@@ -27,3 +27,16 @@ def send_notifications(preview, pk, title, subscribers):
     msg.send()
 
 
+@receiver(post_save, sender=PostCategory)
+def notify_about_new_post(sender, instance, **kwargs):
+    if kwargs['action'] == 'news_create':
+        categories = instance.postCategory.all()
+        subscribers_email = []
+
+        for cat in categories:
+            subscribers = cat.subscribers.all()
+            subscribers_email += [s.email for s in subscribers]
+
+        send_notifications(instance.preview, instance.pk, instance.title, instance.subscribers)
+
+
